@@ -3,7 +3,6 @@
     "lib": ["es2020"],
     "strictNullChecks": true,
     "module": "commonjs",
-    "types": ["node"],
     "target": "es2020",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
