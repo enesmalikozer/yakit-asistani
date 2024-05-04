@@ -5,26 +5,15 @@ WORKDIR /app
 # Add Python and other build dependencies as a virtual package group
 RUN apk add --no-cache --virtual .build-deps python3 make g++
 
-# Copy package files
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 
-# Set environment to production
-ENV NODE_ENV production
+RUN  pnpm install --frozen-lockfile
 
-# Install global and local dependencies using pnpm
-RUN npm install -g pnpm husky typescript && \
-    pnpm install --frozen-lockfile
-
-RUN pnpm i --save-dev @types/node
-
-# Copy the rest of your application
 COPY . .
 
 RUN npx prisma generate 
 
-# Build your application
 RUN pnpm run build \
-    # Remove the virtual package group after building
     && apk del .build-deps
 
 # Command to run your application
