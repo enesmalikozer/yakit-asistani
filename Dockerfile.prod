@@ -12,9 +12,10 @@ COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 ENV NODE_ENV production
 
 # Install global and local dependencies using pnpm
-RUN npm install -g pnpm husky && \
-    pnpm install --frozen-lockfile
-
+RUN npm install -g pnpm husky husky typescript && \
+    pnpm install --frozen-lockfile 
+    
+RUN pnpm i --save-dev @types/node
 # Copy the rest of your application
 COPY . .
 
