@@ -12,8 +12,6 @@ RUN npm install -g pnpm  && \
 
 COPY . .
 
-RUN npx prisma generate 
-
 RUN pnpm run build \
     && apk del .build-deps
 
