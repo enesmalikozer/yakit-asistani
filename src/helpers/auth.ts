@@ -11,9 +11,9 @@ export const checkValidRequest = (
 ) => {
   try {
     let token = request.headers.authorization
-    token = token.replace('Bearer ', '')
+    token = token?.replace('Bearer ', '')
     if (token) {
-      JWT.verify(token, process.env.APP_JWT_SECRET, (err, decoded) => {
+      JWT.verify(token, process.env.APP_JWT_SECRET ?? '', (err, decoded) => {
         if (err) {
           return reply.code(ERROR400.statusCode).send(ERROR400)
         }
@@ -34,13 +34,13 @@ export const checkValidUser = async (
 ) => {
   try {
     let token = request.headers.authorization
-    token = token.replace('Bearer ', '')
+    token = token?.replace('Bearer ', '')
 
     if (!token) {
       return reply.code(ERROR401.statusCode).send(ERROR401)
     }
 
-    const user: any = JWT.verify(token, process.env.APP_JWT_SECRET)
+    const user: any = JWT.verify(token, process.env.APP_JWT_SECRET ?? '')
 
     if (!user.id) {
       return reply.code(ERROR401.statusCode).send(ERROR401)
@@ -52,7 +52,7 @@ export const checkValidUser = async (
       return reply.code(ERROR401.statusCode).send(ERROR401)
     }
     request.authUser = userData
-    done();
+    done()
   } catch (e) {
     return reply.code(ERROR401.statusCode).send(e)
   }
