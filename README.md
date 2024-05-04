@@ -1,4 +1,4 @@
-# Fastify-Typescript
+# yakit-asistani
 typescript based rest-API architecture with prisma and fastify framework.
 
 ## How to use

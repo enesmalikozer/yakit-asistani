@@ -1,6 +1,5 @@
-import path from 'path'
 import envSchema from 'env-schema'
-import S from 'fluent-json-schema'
+import path from 'path'
 
 export const awsConfig = {
   AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
@@ -8,8 +7,8 @@ export const awsConfig = {
   AWS_REGION: process.env.AWS_REGION,
 }
 
-export const awsBucketName = process.env.AWS_BUCKET_NAME;
-export const linkExpireTime = process.env.AWS_LINK_EXPIRE;
+export const awsBucketName = process.env.AWS_BUCKET_NAME
+export const linkExpireTime = process.env.AWS_LINK_EXPIRE
 
 export default function loadConfig(): void {
   const result = require('dotenv').config({
@@ -22,14 +21,30 @@ export default function loadConfig(): void {
 
   envSchema({
     data: result.parsed,
-    schema: S.object()
-      .prop(
-        'NODE_ENV',
-        S.string().enum(['development', 'testing', 'production']).required(),
-      )
-      .prop('API_HOST', S.string().required())
-      .prop('API_PORT', S.string().required())
-      .prop('DATABASE_URL', S.string().required())
-      .prop('APP_JWT_SECRET', S.string().required()),
+    schema: {
+      type: 'object',
+      properties: {
+        NODE_ENV: {
+          type: 'string',
+          enum: ['development', 'testing', 'production'],
+        },
+        LOG_LEVEL: {
+          type: 'string',
+          enum: ['error', 'warn', 'info', 'debug'],
+        },
+        API_PORT: {
+          type: 'string',
+        },
+        DATABASE_URL: {
+          type: 'string',
+        },
+        APP_JWT_SECRET: {
+          type: 'string',
+        },
+        APP_JWT_EXPIRES_IN: {
+          type: 'string',
+        },
+      },
+    },
   })
 }

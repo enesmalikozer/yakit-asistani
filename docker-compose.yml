@@ -1,9 +1,9 @@
-version: "3"
+version: '3'
 services:
   api:
-    container_name: fastify-typescript
+    container_name: yakit-asistani
     ports:
-      - 5000:5000
+      - 8000:8000
     build:
       dockerfile: Dockerfile
       context: .
@@ -19,7 +19,7 @@ services:
     restart: always
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=master123
+      - POSTGRES_PASSWORD=123456
     ports:
       - 5432:5432
     volumes:

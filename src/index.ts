@@ -1,33 +1,31 @@
-import { utils } from './helpers/utils';
 import fastify from 'fastify'
-import pino from 'pino';
-import userRouter from './routes/user.router'
-import postRouter from './routes/post.router';
+import pino from 'pino'
 import loadConfig from './config'
+import { utils } from './helpers/utils'
+import userRouter from './routes/user.router'
 loadConfig()
-
-const port = process.env.API_PORT || 5000;
 
 const startServer = async () => {
   try {
     const server = fastify({
       logger: pino({ level: 'info' }),
     })
-    server.register(require('fastify-formbody'))
-    server.register(require('fastify-cors'))
-    server.register(require('fastify-helmet'))
+    server.register(require('@fastify/formbody'))
+    server.register(require('@fastify/cors'))
+    server.register(require('@fastify/helmet'))
     server.register(userRouter, { prefix: '/api/user' })
-    server.register(postRouter, { prefix: '/api/post' })
     server.setErrorHandler((error, request, reply) => {
-      server.log.error(error);
+      server.log.error(error)
     })
     server.get('/', (request, reply) => {
-      reply.send({ name: 'fastify-typescript' })
+      reply.send({ name: 'yakit-asistani' })
     })
-    server.get('/health-check', async (request, reply) => {
+    server.get('/health', async (request, reply) => {
       try {
         await utils.healthCheck()
-        reply.status(200).send()
+        reply
+          .status(200)
+          .send(`Success health check at ${new Date().toISOString()}`)
       } catch (e) {
         reply.status(500).send()
       }
@@ -42,7 +40,10 @@ const startServer = async () => {
         )
       }
     }
-    await server.listen(port)
+    await server.listen({
+      port: 8000,
+      host: '0.0.0.0',
+    })
   } catch (e) {
     console.error(e)
   }
@@ -54,4 +55,3 @@ process.on('unhandledRejection', (e) => {
 })
 
 startServer()
-

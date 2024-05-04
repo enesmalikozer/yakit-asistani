@@ -1,10 +1,9 @@
 import { FastifyReply } from 'fastify'
-import { IUserRequest } from '../interfaces'
-import { prisma } from '../helpers/utils'
-import { ERRORS, handleServerError } from '../helpers/errors'
 import * as JWT from 'jsonwebtoken'
-import { utils } from '../helpers/utils'
-import { ERROR500, ERROR400, STANDARD } from '../helpers/constants'
+import { ERROR400, STANDARD } from '../helpers/constants'
+import { ERRORS, handleServerError } from '../helpers/errors'
+import { prisma, utils } from '../helpers/utils'
+import { IUserRequest } from '../interfaces'
 
 export const login = async (request: IUserRequest, reply: FastifyReply) => {
   try {
@@ -13,16 +12,16 @@ export const login = async (request: IUserRequest, reply: FastifyReply) => {
     if (!user) {
       reply.code(ERROR400.statusCode).send(ERRORS.userNotExists)
     }
-    const checkPass = await utils.compareHash(password, user.password)
+    const checkPass = await utils.compareHash(password, user?.password)
     if (!checkPass) {
       reply.code(ERROR400.statusCode).send(ERRORS.userCredError)
     }
     const token = JWT.sign(
       {
-        id: user.id,
-        email: user.email,
+        id: user?.id,
+        email: user?.email,
       },
-      process.env.APP_JWT_SECRET,
+      process.env.APP_JWT_SECRET ?? '',
     )
     reply.code(STANDARD.SUCCESS).send({
       token,
@@ -35,7 +34,7 @@ export const login = async (request: IUserRequest, reply: FastifyReply) => {
 
 export const signUp = async (request: IUserRequest, reply: FastifyReply) => {
   try {
-    const { email, password, firstName, lastName } = request.body
+    const { email, password, name } = request.body
     const user = await prisma.user.findUnique({ where: { email: email } })
     if (user) {
       reply.code(409).send(ERRORS.userExists)
@@ -44,22 +43,24 @@ export const signUp = async (request: IUserRequest, reply: FastifyReply) => {
     const createUser = await prisma.user.create({
       data: {
         email,
-        firstName,
-        lastName,
+        name,
         password: String(hashPass),
       },
     })
+
     const token = JWT.sign(
       {
-        id: createUser.id,
-        email: createUser.email,
+        id: user?.id,
+        email: user?.email,
       },
-      process.env.APP_JWT_SECRET,
+      process.env.APP_JWT_SECRET ?? '',
     )
-    delete createUser.password
     reply.code(STANDARD.SUCCESS).send({
       token,
-      user: createUser,
+      user: {
+        ...createUser,
+        password: undefined,
+      },
     })
   } catch (err) {
     handleServerError(reply, err)

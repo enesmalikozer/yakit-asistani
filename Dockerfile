@@ -1,13 +1,16 @@
-FROM node:14-alpine
+FROM --platform=linux/amd64 node:18-alpine
 
 WORKDIR /app
 
 RUN apk add --no-cache --virtual python
 
-COPY package.json package-lock.json ./
+COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 
-RUN npm install --frozen-lockfile
+RUN npm -g install pnpm
+
+RUN pnpm i --frozen-lockfile
 
 COPY . .
 
-CMD npm run dev
+CMD pnpm run dev
+
