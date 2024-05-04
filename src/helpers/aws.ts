@@ -1,6 +1,6 @@
 import { IGetPresign, IPutPresign } from '../interfaces'
 import { S3 } from 'aws-sdk'
-import { awsBucketName, awsConfig, linkExpireTime } from 'config'
+import { awsBucketName, awsConfig, linkExpireTime } from '../config'
 
 const s3 = new S3({
   accessKeyId: awsConfig.AWS_ACCESS_KEY_ID,

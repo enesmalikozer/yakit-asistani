@@ -16,7 +16,7 @@ const startServer = async () => {
       server.log.error(error)
     })
     server.get('/', (request, reply) => {
-      reply.send({ name: 'yakit-asistani' })
+      reply.send({ name: 'yakit-asistani', status: 'ok' })
     })
     server.get('/health', async (request, reply) => {
       try {
