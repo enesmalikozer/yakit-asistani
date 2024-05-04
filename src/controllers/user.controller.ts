@@ -37,6 +37,7 @@ export const signUp = async (request: IUserRequest, reply: FastifyReply) => {
     const { email, password, name } = request.body
     const user = await prisma.user.findUnique({ where: { email: email } })
     if (user) {
+      reply.log.error(ERRORS.userExists)
       reply.code(409).send(ERRORS.userExists)
     }
     const hashPass = await utils.genSalt(10, password)
@@ -55,6 +56,10 @@ export const signUp = async (request: IUserRequest, reply: FastifyReply) => {
       },
       process.env.APP_JWT_SECRET ?? '',
     )
+    reply.log.info('User created successfully', {
+      user: createUser,
+      token,
+    })
     reply.code(STANDARD.SUCCESS).send({
       token,
       user: {
