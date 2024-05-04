@@ -1,9 +1,7 @@
 import fastify from 'fastify'
 import pino from 'pino'
-import loadConfig from './config'
 import { utils } from './helpers/utils'
 import userRouter from './routes/user.router'
-loadConfig()
 
 const startServer = async () => {
   try {
