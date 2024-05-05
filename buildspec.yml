@@ -5,13 +5,12 @@ phases:
     runtime-versions:
       nodejs: latest
     commands:
-      - npm install -g pnpm typescript
-      - pnpm install husky
-      - pnpm i --save-dev @types/node
+      - npm install -g pnpm typescript husky
       - pnpm install --frozen-lockfile
 
   pre_build:
     commands:
+      - pnpm i --save-dev @types/node
       - npx prisma generate
 
   build:
