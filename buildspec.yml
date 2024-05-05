@@ -5,7 +5,9 @@ phases:
     runtime-versions:
       nodejs: latest
     commands:
-      - npm install -g pnpm typescript husky
+      - npm install -g pnpm typescript
+      - pnpm install husky
+      - pnpm i --save-dev @types/node
       - pnpm install --frozen-lockfile
 
   pre_build:
