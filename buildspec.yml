@@ -1,0 +1,24 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: latest
+    commands:
+      - npm install -g pnpm typescript
+      - pnpm install --frozen-lockfile
+
+  pre_build:
+    commands:
+      - npx prisma generate
+
+  build:
+    commands:
+      - pnpm run build
+
+artifacts:
+  files:
+    - 'package.json'
+    - 'pnpm-lock.yaml'
+    - 'build/**/*'
+discard-paths: yes
