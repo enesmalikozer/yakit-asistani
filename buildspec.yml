@@ -8,10 +8,6 @@ phases:
       - npm install -g typescript pnpm
       - pnpm install --frozen-lockfile
 
-  pre_build:
-    commands:
-      - npx prisma generate
-
   build:
     commands:
       - npm run build
