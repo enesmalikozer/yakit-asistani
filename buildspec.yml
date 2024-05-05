@@ -6,7 +6,6 @@ phases:
       nodejs: latest
     commands:
       - npm install -g typescript pnpm
-      - pnpm i --save-dev @types/node
       - pnpm install --frozen-lockfile
 
   pre_build:
