@@ -5,21 +5,20 @@ phases:
     runtime-versions:
       nodejs: latest
     commands:
-      - npm install -g pnpm typescript husky
-      - pnpm install --frozen-lockfile
+      - npm install -g typescript
+      - npm install --frozen-lockfile
 
   pre_build:
     commands:
-      - pnpm i --save-dev @types/node
       - npx prisma generate
 
   build:
     commands:
-      - pnpm run build
+      - npm run build
 
 artifacts:
   files:
     - 'package.json'
-    - 'pnpm-lock.yaml'
+    - 'package-lock.json'
     - 'build/**/*'
 discard-paths: yes
