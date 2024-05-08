@@ -1,4 +1,3 @@
-mkdir /home/ubuntu/yakit-asistani
-cd /home/ubuntu/yakit-asistani
-sudo pnpm install
+mkdir /home/ec2-user/yakit-asistani
+cd /home/ec2-user/yakit-asistani
 sudo pnpm install --frozen-lockfile

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json &&  cp -r ./appspec.yml build",
     "start": "node build/index.js | pino-pretty --colorize",
     "dev": "ts-node-dev ./src/index.ts | pino-pretty --colorize",
     "prisma": "dotenv -e .env prisma",
