@@ -7,5 +7,3 @@ then
 else
   echo "No Fastify server running"
 fi
-
-mkdir /home/ec2-user/yakit-asistani
