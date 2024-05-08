@@ -19,4 +19,6 @@ artifacts:
     - 'package.json'
     - 'pnpm-lock.yaml'
     - 'build/**/*'
+    - 'node_modules/**/*'
+
 discard-paths: yes
