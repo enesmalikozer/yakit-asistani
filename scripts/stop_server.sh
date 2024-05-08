@@ -9,6 +9,7 @@ else
 fi
 
 
-sudo apt-get install nodejs -y
-sudo npm install forever -g
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+source ~/.bashrc
+nvm install
 
