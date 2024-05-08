@@ -9,8 +9,6 @@ else
 fi
 
 
-# install dependencies and build the project
-cd /home/ec2-user/yakit-asistani
-npm install -g pnpm
-pnpm install
-pnpm build
+sudo apt-get install nodejs -y
+sudo npm install forever -g
+
