@@ -1,5 +1,8 @@
-
 #!/bin/bash
-# Stop all servers and start the server
-pm2 stop all
-pm2 start /home/ec2-user/yakit-asistani/build/index.js
+# Start the Fastify server
+cd /home/ec2-user/yakit-asistani/build
+
+echo "Starting Fastify server"
+nohup node index.js > server.log 2>&1 &
+
+echo "Fastify server started successfully"
