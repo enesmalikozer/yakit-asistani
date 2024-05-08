@@ -7,3 +7,10 @@ then
 else
   echo "No Fastify server running"
 fi
+
+
+# install dependencies and build the project
+cd /home/ec2-user/yakit-asistani
+npm install -g pnpm
+pnpm install
+pnpm build
