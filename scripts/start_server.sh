@@ -3,6 +3,7 @@
 cd /home/ec2-user/yakit-asistani
 
 echo "Starting Fastify server"
-nohup pnpm run start > server.log 2>&1 &
+sudo systemctl restart yakit.server
+
 
 echo "Fastify server started successfully"
