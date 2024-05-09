@@ -7,6 +7,6 @@
 sudo yum update -y
 sudo yum install -y nodejs npm
 
-npm install -g pnpm
-pnpm install --frozen-lockfile
-pnpm build
+sudo npm install -g pnpm
+sudo pnpm install --frozen-lockfile
+sudo pnpm build
