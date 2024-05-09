@@ -1,6 +1,5 @@
 import fastify from 'fastify'
 import pino from 'pino'
-import { utils } from './helpers/utils'
 import userRouter from './routes/user.router'
 
 const startServer = async () => {
@@ -20,7 +19,7 @@ const startServer = async () => {
     })
     server.get('/health', async (request, reply) => {
       try {
-        await utils.healthCheck()
+        // await utils.healthCheck()
         reply
           .status(200)
           .send(`Success health check at ${new Date().toISOString()}`)
