@@ -1,5 +1,6 @@
 import fastify from 'fastify'
 import pino from 'pino'
+import { utils } from './helpers/utils'
 import userRouter from './routes/user.router'
 
 const startServer = async () => {
@@ -10,7 +11,7 @@ const startServer = async () => {
     server.register(require('@fastify/formbody'))
     server.register(require('@fastify/cors'))
     server.register(require('@fastify/helmet'))
-    server.register(userRouter, { prefix: '/api/user' })
+    server.register(userRouter, { prefix: '/api' })
     server.setErrorHandler((error, request, reply) => {
       server.log.error(error)
     })
@@ -22,12 +23,14 @@ const startServer = async () => {
     })
     server.get('/health', async (request, reply) => {
       try {
-        // await utils.healthCheck()
+        await utils.healthCheck()
         reply
           .status(200)
-          .send(`Success health check at ${new Date().toISOString()}`)
+          .send(`Success health checkk at ${new Date().toISOString()}`)
       } catch (e) {
-        reply.status(500).send()
+        reply
+          .status(500)
+          .send(`Failed health check at ${new Date().toISOString()}`)
       }
     })
     if (process.env.NODE_ENV === 'production') {
