@@ -38,7 +38,7 @@ const startServer = async () => {
       }
     }
 
-    server.listen({ port: 3000 }, (err, address) => {
+    server.listen({ port: 3000, host: '0.0.0.0' }, (err, address) => {
       if (err) throw err
       server.log.info(`server listening on ${address}`)
     })
