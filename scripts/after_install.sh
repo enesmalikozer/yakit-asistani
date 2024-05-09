@@ -6,7 +6,5 @@ npm install -g pnpm
 pnpm install --frozen-lockfile
 pnpm run db:migrate
 pnpm run db:push
-pnpm build
-
 
 echo "Configuration complete"
