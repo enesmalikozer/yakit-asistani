@@ -1,12 +1,12 @@
 #!/bin/bash
-# Stop the running Fastify server
- 
-APP_NAME="yakit_asistani"
+# Fallback stop script by port number
 
-# Check if the application is running using PM2, and stop it if so
-if pm2 list | grep -q "$APP_NAME"; then
-    echo "Stopping the Fastify application..."
-    pm2 stop "$APP_NAME" || echo "Failed to stop $APP_NAME with PM2."
+PORT=3000  # Update to your Fastify server port
+PID=$(lsof -t -i:$PORT)
+
+if [ -n "$PID" ]; then
+  echo "Stopping process running on port $PORT (PID: $PID)"
+  kill -9 $PID
 else
-    echo "No running instance of $APP_NAME found to stop."
+  echo "No process running on port $PORT."
 fi
