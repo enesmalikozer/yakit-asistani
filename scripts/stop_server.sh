@@ -1,7 +1,7 @@
 #!/bin/bash
 # Fallback stop script by port number
 
-PORT=3000  # Update to your Fastify server port
+PORT=3000  
 PID=$(lsof -t -i:$PORT)
 
 if [ -n "$PID" ]; then
