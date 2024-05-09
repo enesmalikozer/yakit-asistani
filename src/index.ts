@@ -17,6 +17,9 @@ const startServer = async () => {
     server.get('/', (request, reply) => {
       reply.send({ name: 'yakit-asistani', status: 'ok' })
     })
+    server.get('/hello', (request, reply) => {
+      reply.send("Yakit Asistani's API is running")
+    })
     server.get('/health', async (request, reply) => {
       try {
         // await utils.healthCheck()
