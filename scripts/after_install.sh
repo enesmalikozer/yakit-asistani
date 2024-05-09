@@ -4,6 +4,8 @@ cd /home/ec2-user/yakit-asistani
 
 npm install -g pnpm
 pnpm install --frozen-lockfile
+pnpm run db:migrate
+pnpm run db:push
 pnpm build
 
 
