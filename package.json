@@ -12,7 +12,6 @@
     "db:studio": "npm run prisma studio",
     "db:migrate": "npm run prisma migrate dev",
     "db:push": "npm run prisma db push",
-    "prepare": "husky",
     "format": "biome format . --write",
     "lint": "biome lint .",
     "check": "biome check --apply ."
