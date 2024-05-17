@@ -110,6 +110,9 @@ importers:
       pino:
         specifier: ^9.0.0
         version: 9.0.0
+      rimraf:
+        specifier: ^5.0.7
+        version: 5.0.7
     devDependencies:
       '@biomejs/biome':
         specifier: 1.7.3
@@ -177,9 +180,6 @@ importers:
       prisma:
         specifier: 5.13.0
         version: 5.13.0
-      rimraf:
-        specifier: ^5.0.7
-        version: 5.0.7
       tap:
         specifier: 18.7.2
         version: 18.7.2(@types/node@20.12.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.4.5)
