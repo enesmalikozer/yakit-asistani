@@ -1,62 +1,64 @@
-import fastify from 'fastify'
-import pino from 'pino'
-import { utils } from './helpers/utils'
-import userRouter from './routes/user.router'
+import fastify from 'fastify';
+import pino from 'pino';
+import config from './config';
+import logger from './helpers/logger';
+import { healthCheck } from './helpers/utils';
+import { auth, cors, error, formbody, helmet, i18n, multipart, ratelimit, redis } from './plugins';
+import userRouter from './routes/user.router';
 
 const startServer = async () => {
   try {
     const server = fastify({
-      logger: pino({ level: 'info' }),
-    })
-    server.register(require('@fastify/formbody'))
-    server.register(require('@fastify/cors'))
-    server.register(require('@fastify/helmet'))
-    server.register(userRouter, { prefix: '/api' })
-    server.setErrorHandler((error, request, reply) => {
-      server.log.error(error)
-    })
-    server.get('/', (request, reply) => {
-      reply.send({ name: 'yakit-asistani', status: 'ok' })
-    })
-    server.get('/hello', (request, reply) => {
-      reply.send("Yakit Asistani's API is running")
-    })
+      logger: pino({ level: 'debug' }),
+    });
+    server.register(auth);
+    server.register(cors);
+    server.register(error);
+    server.register(formbody);
+    server.register(helmet);
+    server.register(i18n);
+    server.register(multipart);
+    server.register(ratelimit);
+    server.register(redis);
+    server.decorateRequest('redis', server.redis);
+    server.register(userRouter, { prefix: config.apiPrefix });
+
+    server.get('/', (_, reply) => {
+      reply.send({ name: 'yakit-asistani', status: 'ok' });
+    });
     server.get('/health', async (request, reply) => {
       try {
-        await utils.healthCheck()
-        reply
-          .status(200)
-          .send(`Success health checkk at ${new Date().toISOString()}`)
+        await healthCheck();
+        reply.status(200).send(`${request.i18n.t('healthy')} ${new Date().toISOString()}`);
       } catch (e) {
-        reply
-          .status(500)
-          .send(`Failed health check at ${new Date().toISOString()}`)
+        request.log.error(`Failed health check at ${new Date().toISOString()} ${e.message}`);
+        reply.status(500).send(`Failed health check at ${new Date().toISOString()} ${e.message}`);
       }
-    })
+    });
     if (process.env.NODE_ENV === 'production') {
       for (const signal of ['SIGINT', 'SIGTERM']) {
         process.on(signal, () =>
           server.close().then((err) => {
-            console.log(`close application on ${signal}`)
-            process.exit(err ? 1 : 0)
+            server.log.info(`close application on ${signal}`);
+            process.exit(err ? 1 : 0);
           }),
-        )
+        );
       }
     }
 
     server.listen({ port: 3000, host: '0.0.0.0' }, (err, address) => {
-      if (err) throw err
-      server.log.info(`server listening on ${address}`)
-      server.log.info(`server is running on ${process.env.NODE_ENV} mode`)
-    })
+      if (err) throw err;
+      server.log.info(`server listening on ${address}`);
+      server.log.info(`server is running on ${process.env.NODE_ENV} mode2`);
+    });
   } catch (e) {
-    console.error(e)
+    logger.error(e);
   }
-}
+};
 
 process.on('unhandledRejection', (e) => {
-  console.error(e)
-  process.exit(1)
-})
+  console.error(e);
+  process.exit(1);
+});
 
-startServer()
+startServer();

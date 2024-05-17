@@ -1,73 +1,112 @@
-import { FastifyReply } from 'fastify'
-import * as JWT from 'jsonwebtoken'
-import { ERROR400, STANDARD } from '../helpers/constants'
-import { ERRORS, handleServerError } from '../helpers/errors'
-import { prisma, utils } from '../helpers/utils'
-import { IUserRequest } from '../interfaces'
+import type { FastifyReply } from 'fastify';
+import { ERRORS, handleServerError } from '../helpers/errors';
+import { generateAccessToken, generateRefreshToken } from '../helpers/token';
+import { compareHash, genSalt, prisma } from '../helpers/utils';
+import type { IUserRequest } from '../interfaces';
 
 export const login = async (request: IUserRequest, reply: FastifyReply) => {
   try {
-    const { email, password } = request.body
-    const user = await prisma.user.findUnique({ where: { email: email } })
+    const { email, password } = request.body;
+    const user = await prisma.user.findUnique({ where: { email: email } });
     if (!user) {
-      reply.code(ERROR400.statusCode).send(ERRORS.userNotExists)
+      reply.badRequest(request.i18n.t(ERRORS.userNotExists));
+      return;
     }
-    const checkPass = await utils.compareHash(password, user?.password)
+    request.log.info('User found');
+    request.log.info(user);
+    const checkPass = await compareHash(user.password, password);
     if (!checkPass) {
-      reply.code(ERROR400.statusCode).send(ERRORS.userCredError)
+      request.log.error(checkPass, request.i18n.t(ERRORS.userCredError));
+      reply.badRequest(request.i18n.t(ERRORS.userCredError));
+      return;
     }
-    const token = JWT.sign(
-      {
-        id: user?.id,
-        email: user?.email,
-      },
-      process.env.APP_JWT_SECRET ?? '',
-    )
-    reply.code(STANDARD.SUCCESS).send({
-      token,
-      user,
-    })
+    const accessToken = generateAccessToken(request, reply, {
+      ...user,
+      password: undefined,
+    });
+    const refreshToken = generateRefreshToken(request, reply, {
+      ...user,
+      password: undefined,
+    });
+
+    reply.setCookie('access_token', accessToken, {
+      path: '/',
+      httpOnly: true,
+      secure: true,
+    });
+    reply.setCookie('refresh_token', refreshToken, {
+      path: '/',
+      httpOnly: true,
+      secure: true,
+    });
+    request.redis.set(user.email, accessToken);
+    reply.code(200).send({
+      accessToken,
+      refreshToken,
+    });
   } catch (err) {
-    handleServerError(reply, err)
+    handleServerError(reply, err);
   }
-}
+};
 
 export const signUp = async (request: IUserRequest, reply: FastifyReply) => {
   try {
-    const { email, password, name } = request.body
-    const user = await prisma.user.findUnique({ where: { email: email } })
+    const { email, password, name } = request.body;
+    const user = await prisma.user.findUnique({ where: { email: email } });
     if (user) {
-      reply.log.error(ERRORS.userExists)
-      reply.code(409).send(ERRORS.userExists)
+      reply.log.error(ERRORS.userExists);
+      reply.badRequest(request.i18n.t(ERRORS.userExists));
     }
-    const hashPass = await utils.genSalt(10, password)
+    const hashPass = await genSalt(10, password);
     const createUser = await prisma.user.create({
       data: {
         email,
         name,
         password: String(hashPass),
       },
-    })
+    });
 
-    const token = JWT.sign(
-      {
-        id: user?.id,
-        email: user?.email,
-      },
-      process.env.APP_JWT_SECRET ?? '',
-    )
+    const token = request.jwt.sign({ ...user });
+    reply.setCookie('access_token', token, {
+      path: '/',
+      httpOnly: true,
+      secure: true,
+    });
+
     reply.log.info('User created successfully', {
       user: createUser,
       token,
-    })
-    reply.code(STANDARD.SUCCESS).send({
+    });
+    reply.code(200).send({
       token,
       user: {
         ...createUser,
         password: undefined,
       },
-    })
+    });
   } catch (err) {
-    handleServerError(reply, err)
+    handleServerError(reply, err);
   }
-}
+};
+
+export const logout = async (request: IUserRequest, reply: FastifyReply) => {
+  try {
+    request.redis.del(request.user.email);
+    await reply.clearCookie('access_token');
+    await reply.clearCookie('refresh_token');
+    reply.code(200).send();
+  } catch (err) {
+    handleServerError(reply, err);
+  }
+};
+
+export const me = async (request: IUserRequest, reply: FastifyReply) => {
+  try {
+    const user = request.user;
+    if (!user) {
+      reply.badRequest(request.i18n.t(ERRORS.userNotExists));
+    } else reply.code(200).send(user);
+  } catch (err) {
+    handleServerError(reply, err);
+  }
+};
