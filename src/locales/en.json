@@ -1,0 +1,12 @@
+{
+  "healthy": "Server is up and running",
+  "invalid_token": "Token is invalid.",
+  "user_exists": "User already exists",
+  "user_not_exists": "User not exists",
+  "user_cred_error": "Invalid credential",
+  "token_error": "Invalid Token",
+  "unauthorized": "No access token was found in 'Authorization' header.",
+  "no_refresh_token": "No refresh token was found in 'x-refresh-token' header.",
+  "token_expired": "Token expired",
+  "internal_server_error": "Internal Server Error"
+}

@@ -1,0 +1,11 @@
+{
+  "healthy": "Sunucu çalışıyor",
+  "invalid_token": "Token geçersiz.",
+  "user_exists": "Kullanıcı zaten var",
+  "user_not_exists": "Kullanıcı mevcut değil",
+  "user_cred_error": "Geçersiz kimlik bilgisi",
+  "token_error": "Geçersiz Token",
+  "unauthorized": "No access token was found in 'Authorization' header.",
+  "no_refresh_token": "No refresh token was found in 'x-refresh-token' header.",
+  "token_expired": "Refresh Token expired"
+}

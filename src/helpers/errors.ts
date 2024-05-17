@@ -1,15 +1,14 @@
-import { FastifyReply } from 'fastify'
-import { ERROR500 } from './constants'
+import { FastifyReply } from 'fastify';
 
-export const ERRORS = {
-  invalidToken: new Error('Token is invalid.'),
-  userExists: new Error('User already exists'),
-  userNotExists: new Error('User not exists'),
-  userCredError: new Error('Invalid credential'),
-  tokenError: new Error('Invalid Token'),
+export enum ERRORS {
+  invalidToken = 'invalid_token',
+  userExists = 'user_exists',
+  userNotExists = 'user_not_exists',
+  userCredError = 'user_cred_error',
+  tokenError = 'token_error',
 }
 
-export function handleServerError(reply: FastifyReply, error: any) {
-  reply.log.error(error)
-  return reply.status(ERROR500.statusCode).send(ERROR500)
+export function handleServerError(reply: FastifyReply, error: Error) {
+  reply.log.error(error);
+  return reply.internalServerError();
 }
